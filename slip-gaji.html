@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slip Gaji Modern</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fb;
+            color: var(--dark);
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .app-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary);
+        }
+        
+        .slip-container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 120px;
+            font-weight: 900;
+            color: rgba(0, 0, 0, 0.03);
+            z-index: 0;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            z-index: 0;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .company-info h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .company-info p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .slip-info {
+            text-align: right;
+        }
+        
+        .slip-info h2 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+        
+        .slip-info p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .payment-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .status-paid {
+            background-color: rgba(76, 201, 240, 0.2);
+            color: #0a9396;
+        }
+        
+        .status-unpaid {
+            background-color: rgba(247, 37, 133, 0.2);
+            color: #ae2012;
+        }
+        
+        .employee-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 25px 30px;
+            background-color: var(--light);
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(67, 97, 238, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary);
+            font-size: 18px;
+        }
+        
+        .info-content h3 {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .info-content p {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .salary-details {
+            padding: 25px 30px;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+        }
+        
+        .salary-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .salary-table th {
+            background-color: var(--primary);
+            color: white;
+            text-align: left;
+            padding: 15px;
+            font-weight: 600;
+        }
+        
+        .salary-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .salary-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .salary-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .amount {
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        .total-section {
+            background: linear-gradient(135deg, #4cc9f0, #4361ee);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .total-label {
+            font-size: 18px;
+        }
+        
+        .total-amount {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .action-buttons {
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .slip-info {
+                text-align: center;
+                margin-top: 15px;
+            }
+            
+            .employee-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .watermark {
+                font-size: 80px;
+            }
+            
+            .salary-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-title {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .modal-buttons .btn {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="app-title">Aplikasi Slip Gaji Modern</h1>
+        
+        <div class="slip-container">
+            <div class="watermark">SLIP GAJI</div>
+            
+            <div class="header">
+                <div class="header-content">
+                    <div class="company-info">
+                        <h1>PT. Teknologi Maju Jaya</h1>
+                        <p>Jl. Teknologi No. 123, Jakarta</p>
+                    </div>
+                    <div class="slip-info">
+                        <h2>Slip Gaji</h2>
+                        <p>Periode: Mei 2023</p>
+                        <div class="payment-status status-unpaid" id="paymentStatus">
+                            <i class="fas fa-clock"></i>
+                            <span>Belum Dibayar</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="employee-info">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>Nama Karyawan</h3>
+                        <p>Ahmad Rizki</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>ID Karyawan</h3>
+                        <p>EMP-2023-001</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>Jabatan</h3>
+                        <p>Software Developer</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="info-content">
+                        <h3>Tanggal Pembayaran</h3>
+                        <p>31 Mei 2023</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="salary-details">
+                <h3 class="section-title">
+                    <i class="fas fa-money-bill-wave"></i>
+                    Rincian Gaji
+                </h3>
+                
+                <table class="salary-table">
+                    <thead>
+                        <tr>
+                            <th>Keterangan</th>
+                            <th class="amount">Jumlah</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Gaji Pokok</td>
+                            <td class="amount">Rp 8.500.000</td>
+                        </tr>
+                        <tr>
+                            <td>Tunjangan Transportasi</td>
+                            <td class="amount">Rp 750.000</td>
+                        </tr>
+                        <tr>
+                            <td>Tunjangan Makan</td>
+                            <td class="amount">Rp 650.000</td>
+                        </tr>
+                        <tr>
+                            <td>Bonus Proyek</td>
+                            <td class="amount">Rp 1.200.000</td>
+                        </tr>
+                        <tr>
+                            <td>Lembur</td>
+                            <td class="amount">Rp 450.000</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total Pendapatan</strong></td>
+                            <td class="amount"><strong>Rp 11.550.000</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Potongan Pajak</td>
+                            <td class="amount">- Rp 850.000</td>
+                        </tr>
+                        <tr>
+                            <td>Potongan BPJS</td>
+                            <td class="amount">- Rp 320.000</td>
+                        </tr>
+                        <tr>
+                            <td>Potongan Lainnya</td>
+                            <td class="amount">- Rp 150.000</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total Potongan</strong></td>
+                            <td class="amount"><strong>- Rp 1.320.000</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="total-section">
+                <div class="total-label">Gaji Bersih yang Diterima</div>
+                <div class="total-amount">Rp 10.230.000</div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-secondary">
+                    <i class="fas fa-print"></i> Cetak Slip
+                </button>
+                <button class="btn btn-secondary">
+                    <i class="fas fa-download"></i> Unduh PDF
+                </button>
+                <button class="btn btn-primary" id="markPaidBtn">
+                    <i class="fas fa-check-circle"></i> Tandai Sudah Dibayar
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Konfirmasi Pembayaran</h2>
+            <p>Apakah Anda yakin ingin menandai slip gaji ini sebagai sudah dibayar? Tindakan ini tidak dapat dibatalkan.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" id="cancelBtn">Batal</button>
+                <button class="btn btn-primary" id="confirmBtn">Ya, Tandai Sudah Dibayar</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const markPaidBtn = document.getElementById('markPaidBtn');
+        const paymentStatus = document.getElementById('paymentStatus');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const confirmBtn = document.getElementById('confirmBtn');
+        
+        markPaidBtn.addEventListener('click', function() {
+            confirmationModal.style.display = 'flex';
+        });
+        
+        cancelBtn.addEventListener('click', function() {
+            confirmationModal.style.display = 'none';
+        });
+        
+        confirmBtn.addEventListener('click', function() {
+            paymentStatus.className = 'payment-status status-paid';
+            paymentStatus.innerHTML = '<i class="fas fa-check-circle"></i><span>Sudah Dibayar</span>';
+            
+            confirmationModal.style.display = 'none';
+            
+            markPaidBtn.disabled = true;
+            markPaidBtn.innerHTML = '<i class="fas fa-check-circle"></i> Sudah Dibayar';
+            markPaidBtn.style.opacity = '0.7';
+            markPaidBtn.style.cursor = 'not-allowed';
+            
+            alert('Status slip gaji berhasil diubah menjadi "Sudah Dibayar"');
+        });
+        
+        window.addEventListener('click', function(event) {
+            if (event.target === confirmationModal) {
+                confirmationModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
